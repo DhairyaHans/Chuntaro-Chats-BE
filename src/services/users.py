@@ -19,10 +19,10 @@ class UsersService:
             register_user_dto.password = password_hash
             
             # Check if email already exists
-            is_exists = self.get_user_details({"email": register_user_dto.email})
+            is_exists = await self.users_repository.get_user_details({"email": register_user_dto.email})
             if is_exists:
                 raise ValueError(f"Email {register_user_dto.email} already exists")
-
+            print("users exists - ", is_exists)
             print("REGIHSLDHALHD")
             # Register New User
             user = await self.users_repository.register_user(register_user_dto=register_user_dto)
@@ -55,13 +55,15 @@ class UsersService:
         except Exception as e:
             raise e
     
-    async def get_user_details(self, id):
+    async def get_user_details(self, filters: dict):
         try:
-            user = await self.users_repository.get_user_details({"id": id})
+            print("FILTERS SERVICE - ", filters)
+            user = await self.users_repository.get_user_details(filters=filters)
+            print("USER DETAILS SERVICE - ", user)
             if not user:
-                raise Exception(f"User with id {id} doesn't exists")
+                raise ValueError("User doesn't exists")
             else:
-                print("User by id - ", id, ' - ', user)
+                # print("User - ", user)
                 user_details = UsersDetails(
                     id = user.id,
                     email = user.email,
@@ -69,11 +71,11 @@ class UsersService:
                 )
 
                 response = SuccessResponse[UsersDetails](
-                    message="User Registered Successfully",
+                    message="User Details Fetched Successfully",
                     data=user_details,
-                    status=HTTPStatus.CREATED.value,
+                    status=HTTPStatus.OK.value,
                     meta={
-                        "info": HTTPStatus.CREATED.description
+                        "info": HTTPStatus.OK.description
                     }
                 )
                 return response

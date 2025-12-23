@@ -9,5 +9,7 @@ users_router = APIRouter()
 async def get_user(id: int):
     # Fetch user data from db
     logger.info(f"Fetching user data with id: {id}")
-    response = UsersService.get_user_details(id)
+    user_service = UsersService()
+    print({"id": id})
+    response = await user_service.get_user_details({"id": id})
     return response

@@ -1,1 +1,20 @@
 Generic single-database configuration.
+
+## Alembic Commands - 
+
+### Create a new migration/revision -
+    > alembic revision -m "create account table"
+
+### Running/Upgrading the migrations - 
+##### To run all the migrations -
+    > alembic upgrade head
+
+##### To run partial migrations -
+    > alembic upgrade `revision-id`
+
+### Downgrading the migrations
+##### To downgrade all the migrations -
+    > alembic downgrade base
+
+### Get current revision state -
+    > alembic current

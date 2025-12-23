@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "chuntaro-chats-be"
 version = "0.1.0"
-description = "Add your description here"
+description = "Chuntaro Chats Backend Service"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [

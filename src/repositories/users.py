@@ -40,6 +40,8 @@ class UsersRepository:
             raise e
 
     async def get_user_details(self, filters: dict) -> Users:
+        user = None
+        print("filters in repo - ", filters)
         with get_session() as session:
             print("jsdlkashdlhas")
             query = session.query(Users)
@@ -64,5 +66,5 @@ class UsersRepository:
                     )
             print("query - ", query)
             user = query.first()
-            print(user.__dict__)
-            return user
+            print("user fetched - ", user)
+        return user
