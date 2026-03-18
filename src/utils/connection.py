@@ -1,5 +1,4 @@
 import os
-from contextlib import contextmanager
 from typing import Iterator
 
 from dotenv import load_dotenv
@@ -33,7 +32,6 @@ def get_sessionmaker() -> sessionmaker:
         _SessionLocal = sessionmaker(bind=get_db_engine(), autoflush=False, future=True)
     return _SessionLocal
 
-@contextmanager
 def get_session() -> Iterator[Session]:
     """
     Use this as a per-request context manager:
@@ -53,3 +51,8 @@ def get_session() -> Iterator[Session]:
         raise
     finally:
         session.close()
+
+def execute_in_transaction(session, operations):
+    with session.begin():
+        for func, args, kwargs in operations:
+            func(session, *args, **kwargs)

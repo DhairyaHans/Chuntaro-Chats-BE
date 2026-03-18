@@ -7,6 +7,7 @@ Create Date: 2025-12-24 01:20:51.497667
 """
 from typing import Sequence, Union
 
+from sqlalchemy import text
 from alembic import op
 import sqlalchemy as sa
 
@@ -20,9 +21,16 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     """Upgrade schema."""
-    pass
-
+    op.create_table(
+        "groups",
+        sa.Column("uuid", sa.UUID, primary_key=True, server_default=text("gen_random_uuid()")),
+        sa.Column("name", sa.String, nullable=False),
+        sa.Column("description", sa.String),
+        sa.Column("owner_id", sa.Integer, nullable=False),
+        sa.Column("created_at", sa.DateTime,server_default=sa.func.now(), nullable=False),
+        sa.Column("updated_at", sa.DateTime,server_default=sa.func.now(), nullable=False),
+    )
 
 def downgrade() -> None:
     """Downgrade schema."""
-    pass
+    op.drop_table("groups")

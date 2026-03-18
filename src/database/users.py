@@ -1,8 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
 from datetime import datetime
-
-Base = declarative_base()
+from database.base import Base
 
 class Users(Base):
     __tablename__ = "users"
@@ -11,21 +10,19 @@ class Users(Base):
     lname = Column(String)
     email = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
-    created_at = Column(DateTime, nullable=False, default=datetime.now()) 
-    
-    # def __dict__(self) -> dict:
-    #     # safe serialization that never exposes the password
-    #     return {
-    #         "id": self.id,
-    #         "fname": self.fname,
-    #         "lname": self.lname,
-    #         "email": self.email,
-    #         "created_at": self.created_at.isoformat() if self.created_at else None,
-    #     }
+    created_at = Column(DateTime, nullable=False, default=datetime.now) 
 
-    # def __repr__(self) -> dict:
-    #     return (f"<Users(id={self.id}, fname='{self.fname}', lname='{self.lname}', "
-    #             f"email='{self.email}', created_at={self.created_at})>")
+    owned_groups = relationship("Groups", back_populates="owner")
 
-    # def __str__(self) -> dict:
-    #     return (f"User {self.id}: {self.fname} {self.lname} ({self.email})")
+    group_associations = relationship(
+        "GroupsUsers",
+        back_populates="user",
+        cascade="all, delete-orphan"
+    )
+
+    def __repr__(self) -> str:
+        return (f"<Users(id={self.id}, fname='{self.fname}', lname='{self.lname}', "
+                f"email='{self.email}', created_at={self.created_at})>")
+
+    def __str__(self) -> str:
+        return (f"User {self.id}: {self.fname} {self.lname} ({self.email})")
